@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>OM SHAH | EMI Calculator & Loan Analysis Dashboard</title>
+<meta name="description" content="Premium EMI Calculator and Loan Analysis Dashboard by OM SHAH" />
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ================= TOASTS ================= -->
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+<!-- ================= LOADER ================= -->
+<div id="pageLoader" class="page-loader" role="status" aria-label="Loading">
+  <div class="loader-ring"></div>
+  <p>Preparing your dashboard…</p>
+</div>
+
+<!-- ================= NAV ================= -->
+<nav class="navbar" role="navigation" aria-label="Primary">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <span class="nav-logo"><i class="fa-solid fa-chart-line"></i></span>
+      <span>EMI Studio</span>
+    </div>
+    <div class="nav-links">
+      <a href="#emiSection"><i class="fa-solid fa-calculator"></i> EMI</a>
+      <a href="#chartsSection"><i class="fa-solid fa-chart-pie"></i> Charts</a>
+      <a href="#amortSection"><i class="fa-solid fa-table"></i> Schedule</a>
+      <a href="#goalSeekSection"><i class="fa-solid fa-crosshairs"></i> Goal Seek</a>
+    </div>
+    <div class="nav-actions">
+      <select id="currencySelector" class="currency-select" aria-label="Select currency">
+        <option value="INR">₹ INR</option>
+        <option value="USD">$ USD</option>
+        <option value="EUR">€ EUR</option>
+        <option value="GBP">£ GBP</option>
+      </select>
+      <button id="themeToggle" class="icon-btn" aria-label="Toggle dark mode" title="Toggle theme (Ctrl+D)">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= BRANDING HERO ================= -->
+<header class="hero">
+  <div class="hero-glass">
+    <p class="hero-eyebrow">FINANCIAL INTELLIGENCE SUITE</p>
+    <h1 class="brand-title">OM SHAH</h1>
+    <p class="hero-tagline">EMI Calculator &amp; Loan Analysis Dashboard</p>
+    <div class="hero-badges">
+      <span><i class="fa-solid fa-shield-halved"></i> Bank-grade accuracy</span>
+      <span><i class="fa-solid fa-bolt"></i> Real-time recalculation</span>
+      <span><i class="fa-solid fa-file-export"></i> Export ready</span>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ================= SECTION 1: EMI CALCULATOR ================= -->
+  <section id="emiSection" class="panel glass-card" aria-labelledby="emiHeading">
+    <div class="panel-head">
+      <h2 id="emiHeading"><i class="fa-solid fa-calculator"></i> Automated Loan Amortization Dashboard</h2>
+      <p class="panel-sub">Adjust any field — everything below recalculates instantly.</p>
+    </div>
+
+    <form id="emiForm" class="input-grid" autocomplete="off">
+      <div class="field">
+        <label for="principal">Principal Amount</label>
+        <div class="input-wrap">
+          <span class="prefix" id="currencyPrefix">₹</span>
+          <input type="text" inputmode="decimal" id="principal" value="2500000" aria-describedby="principalError" />
+        </div>
+        <input type="range" id="principalRange" min="10000" max="20000000" step="10000" value="2500000" aria-label="Principal amount slider" />
+        <span class="field-error" id="principalError"></span>
+      </div>
+
+      <div class="field">
+        <label for="rate">Annual Interest Rate (%)</label>
+        <div class="input-wrap">
+          <input type="text" inputmode="decimal" id="rate" value="8.5" aria-describedby="rateError" />
+          <span class="suffix">%</span>
+        </div>
+        <input type="range" id="rateRange" min="0.5" max="30" step="0.05" value="8.5" aria-label="Interest rate slider" />
+        <span class="field-error" id="rateError"></span>
+      </div>
+
+      <div class="field">
+        <label for="tenure">Loan Tenure</label>
+        <div class="input-wrap tenure-wrap">
+          <input type="text" inputmode="numeric" id="tenure" value="20" aria-describedby="tenureError" />
+          <select id="tenureUnit" aria-label="Tenure unit">
+            <option value="years" selected>Years</option>
+            <option value="months">Months</option>
+          </select>
+        </div>
+        <input type="range" id="tenureRange" min="1" max="30" step="1" value="20" aria-label="Tenure slider" />
+        <span class="field-error" id="tenureError"></span>
+      </div>
+
+      <div class="field field-actions">
+        <button type="button" id="calculateBtn" class="btn btn-primary">
+          <i class="fa-solid fa-bolt"></i> Calculate EMI
+        </button>
+        <button type="button" id="resetBtn" class="btn btn-ghost">
+          <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+      </div>
+    </form>
+
+    <!-- Rate breakdown strip -->
+    <div class="rate-strip" id="rateStrip">
+      <div><span>Monthly EMI</span><strong id="stripMonthlyEmi">—</strong></div>
+      <div><span>Yearly EMI</span><strong id="stripYearlyEmi">—</strong></div>
+      <div><span>Monthly Interest Rate</span><strong id="stripMonthlyRate">—</strong></div>
+      <div><span>Annual Interest Rate</span><strong id="stripAnnualRate">—</strong></div>
+      <div><span>Daily Interest</span><strong id="stripDailyInterest">—</strong></div>
+    </div>
+
+    <!-- KPI Dashboard -->
+    <div class="kpi-grid" id="kpiGrid" aria-live="polite">
+      <!-- injected by JS -->
+    </div>
+
+    <!-- Loan Summary -->
+    <div class="summary-card">
+      <h3><i class="fa-solid fa-file-invoice-dollar"></i> Loan Summary</h3>
+      <div class="summary-grid" id="summaryGrid"></div>
+      <div class="progress-group">
+        <div class="progress-row">
+          <div class="progress-label"><span>Principal</span><span id="principalPct">0%</span></div>
+          <div class="progress-track"><div class="progress-fill fill-principal" id="principalBar"></div></div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-label"><span>Interest</span><span id="interestPct">0%</span></div>
+          <div class="progress-track"><div class="progress-fill fill-interest" id="interestBar"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION: CHARTS ================= -->
+  <section id="chartsSection" class="panel glass-card">
+    <div class="panel-head">
+      <h2><i class="fa-solid fa-chart-pie"></i> Visual Analytics</h2>
+      <p class="panel-sub">Interactive charts, exportable as PNG.</p>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-card-head"><h4>Principal vs Interest</h4><button class="chip-btn export-chart-btn" data-chart="lineChart"><i class="fa-solid fa-download"></i> PNG</button></div>
+        <canvas id="lineChart" height="260"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-head"><h4>Loan Composition</h4><button class="chip-btn export-chart-btn" data-chart="doughnutChart"><i class="fa-solid fa-download"></i> PNG</button></div>
+        <div class="doughnut-wrap">
+          <canvas id="doughnutChart" height="260"></canvas>
+          <div class="doughnut-center" id="doughnutCenter"><span id="doughnutValue">—</span><small>Total Payable</small></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-head"><h4>Outstanding Balance</h4><button class="chip-btn export-chart-btn" data-chart="areaChart"><i class="fa-solid fa-download"></i> PNG</button></div>
+        <canvas id="areaChart" height="260"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-head"><h4>Monthly Principal vs Interest</h4><button class="chip-btn export-chart-btn" data-chart="barChart"><i class="fa-solid fa-download"></i> PNG</button></div>
+        <canvas id="barChart" height="260"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SECTION: AMORTIZATION TABLE ================= -->
+  <section id="amortSection" class="panel glass-card">
+    <div class="panel-head">
+      <h2><i class="fa-solid fa-table-list"></i> Amortization Schedule</h2>
+      <p class="panel-sub">Opening Balance − Principal = Closing Balance, reconciled every row.</p>
+    </div>
+
+    <div class="table-toolbar">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="amortSearch" placeholder="Search payment #, EMI, interest…" aria-label="Search amortization table" />
+      </div>
+      <div class="toolbar-actions">
+        <select id="amortPageSize" aria-label="Rows per page">
+          <option value="10">10 / page</option>
+          <option value="25" selected>25 / page</option>
+          <option value="50">50 / page</option>
+          <option value="100">100 / page</option>
+          <option value="all">All</option>
+        </select>
+        <button class="chip-btn" id="amortCopy"><i class="fa-solid fa-copy"></i> Copy</button>
+        <button class="chip-btn" id="amortPrint"><i class="fa-solid fa-print"></i> Print</button>
+        <button class="chip-btn" id="amortCsv"><i class="fa-solid fa-file-csv"></i> CSV</button>
+        <button class="chip-btn" id="amortExcel"><i class="fa-solid fa-file-excel"></i> Excel</button>
+        <button class="chip-btn" id="amortPdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table" id="amortTable">
+        <thead>
+          <tr>
+            <th data-key="no">Payment No. <i class="fa-solid fa-sort"></i></th>
+            <th data-key="opening">Beginning Balance <i class="fa-solid fa-sort"></i></th>
+            <th data-key="emi">EMI <i class="fa-solid fa-sort"></i></th>
+            <th data-key="interest">Interest <i class="fa-solid fa-sort"></i></th>
+            <th data-key="principal">Principal <i class="fa-solid fa-sort"></i></th>
+            <th data-key="closing">Ending Balance <i class="fa-solid fa-sort"></i></th>
+          </tr>
+        </thead>
+        <tbody id="amortBody"></tbody>
+        <tfoot id="amortFoot"></tfoot>
+      </table>
+    </div>
+    <div class="pagination" id="amortPagination"></div>
+  </section>
+
+  <!-- ================= SECTION 2: GOAL SEEK ================= -->
+  <section id="goalSeekSection" class="panel glass-card">
+    <div class="panel-head">
+      <h2><i class="fa-solid fa-crosshairs"></i> Goal Seek — Interest Rate Analysis</h2>
+      <p class="panel-sub">Reverse-solve the annual interest rate from your desired EMI using Newton-Raphson with bisection fallback.</p>
+    </div>
+
+    <form id="goalSeekForm" class="input-grid" autocomplete="off">
+      <div class="field">
+        <label for="gsPrincipal">Principal</label>
+        <div class="input-wrap">
+          <span class="prefix">₹</span>
+          <input type="text" inputmode="decimal" id="gsPrincipal" value="2500000" />
+        </div>
+      </div>
+      <div class="field">
+        <label for="gsTenure">Loan Tenure</label>
+        <div class="input-wrap tenure-wrap">
+          <input type="text" inputmode="numeric" id="gsTenure" value="20" />
+          <select id="gsTenureUnit">
+            <option value="years" selected>Years</option>
+            <option value="months">Months</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="gsEmi">Desired EMI</label>
+        <div class="input-wrap">
+          <span class="prefix">₹</span>
+          <input type="text" inputmode="decimal" id="gsEmi" value="22000" />
+        </div>
+      </div>
+      <div class="field field-actions">
+        <button type="button" id="goalSeekBtn" class="btn btn-primary">
+          <i class="fa-solid fa-crosshairs"></i> Find Interest Rate
+        </button>
+      </div>
+    </form>
+
+    <div class="field-error" id="gsError" style="margin: 0 0 12px;"></div>
+
+    <div class="kpi-grid" id="gsResultGrid" aria-live="polite"></div>
+  </section>
+
+  <!-- ================= SECTION: REPAYMENT SCHEDULE ================= -->
+  <section id="repaySection" class="panel glass-card">
+    <div class="panel-head">
+      <h2><i class="fa-solid fa-receipt"></i> Loan Repayment Schedule</h2>
+      <p class="panel-sub">Independent schedule view with its own summary and export tools.</p>
+    </div>
+
+    <div class="summary-grid" id="repaySummaryGrid"></div>
+
+    <div class="table-toolbar">
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="repaySearch" placeholder="Search payment #, EMI, interest…" aria-label="Search repayment table" />
+      </div>
+      <div class="toolbar-actions">
+        <select id="repayPageSize" aria-label="Rows per page">
+          <option value="10">10 / page</option>
+          <option value="25" selected>25 / page</option>
+          <option value="50">50 / page</option>
+          <option value="100">100 / page</option>
+          <option value="all">All</option>
+        </select>
+        <button class="chip-btn" id="repayCopy"><i class="fa-solid fa-copy"></i> Copy</button>
+        <button class="chip-btn" id="repayPrint"><i class="fa-solid fa-print"></i> Print</button>
+        <button class="chip-btn" id="repayCsv"><i class="fa-solid fa-file-csv"></i> CSV</button>
+        <button class="chip-btn" id="repayExcel"><i class="fa-solid fa-file-excel"></i> Excel</button>
+        <button class="chip-btn" id="repayPdf"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table" id="repayTable">
+        <thead>
+          <tr>
+            <th data-key="no">Payment No. <i class="fa-solid fa-sort"></i></th>
+            <th data-key="opening">Opening Balance <i class="fa-solid fa-sort"></i></th>
+            <th data-key="emi">EMI <i class="fa-solid fa-sort"></i></th>
+            <th data-key="interest">Interest <i class="fa-solid fa-sort"></i></th>
+            <th data-key="principal">Principal <i class="fa-solid fa-sort"></i></th>
+            <th data-key="closing">Closing Balance <i class="fa-solid fa-sort"></i></th>
+          </tr>
+        </thead>
+        <tbody id="repayBody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="repayPagination"></div>
+
+    <div class="report-cta">
+      <button class="btn btn-primary" id="fullReportBtn"><i class="fa-solid fa-file-pdf"></i> Generate Full PDF Report</button>
+      <button class="btn btn-ghost" id="copyAllBtn"><i class="fa-solid fa-copy"></i> Copy Results</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <span class="footer-brand">OM SHAH</span>
+      <p>EMI Calculator &amp; Loan Analysis Dashboard — built for accuracy, clarity, and speed.</p>
+    </div>
+    <div class="footer-meta">
+      <span>© <span id="footerYear"></span> Om Shah. All calculations for illustrative purposes.</span>
+      <span class="kbd-hint"><kbd>Ctrl</kbd>+<kbd>D</kbd> theme · <kbd>Ctrl</kbd>+<kbd>K</kbd> focus search · <kbd>Ctrl</kbd>+<kbd>P</kbd> print</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating Action Buttons -->
+<div class="fab-stack">
+  <button id="backToTop" class="fab" aria-label="Back to top" title="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+  <button id="fabPdf" class="fab fab-primary" aria-label="Generate PDF report" title="Generate PDF report"><i class="fa-solid fa-file-pdf"></i></button>
+</div>
+
+<!-- Tooltip element -->
+<div id="tooltipEl" class="tooltip-el" role="tooltip"></div>
+
+<!-- ================= LIBRARIES ================= -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>
