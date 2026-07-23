@@ -159,22 +159,22 @@
     <div class="charts-grid">
       <div class="chart-card">
         <div class="chart-card-head"><h4>Principal vs Interest</h4><button class="chip-btn export-chart-btn" data-chart="lineChart"><i class="fa-solid fa-download"></i> PNG</button></div>
-        <canvas id="lineChart" height="260"></canvas>
+        <div class="chart-canvas-wrap"><canvas id="lineChart"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="chart-card-head"><h4>Loan Composition</h4><button class="chip-btn export-chart-btn" data-chart="doughnutChart"><i class="fa-solid fa-download"></i> PNG</button></div>
-        <div class="doughnut-wrap">
-          <canvas id="doughnutChart" height="260"></canvas>
+        <div class="doughnut-wrap chart-canvas-wrap">
+          <canvas id="doughnutChart"></canvas>
           <div class="doughnut-center" id="doughnutCenter"><span id="doughnutValue">—</span><small>Total Payable</small></div>
         </div>
       </div>
       <div class="chart-card">
         <div class="chart-card-head"><h4>Outstanding Balance</h4><button class="chip-btn export-chart-btn" data-chart="areaChart"><i class="fa-solid fa-download"></i> PNG</button></div>
-        <canvas id="areaChart" height="260"></canvas>
+        <div class="chart-canvas-wrap"><canvas id="areaChart"></canvas></div>
       </div>
       <div class="chart-card">
         <div class="chart-card-head"><h4>Monthly Principal vs Interest</h4><button class="chip-btn export-chart-btn" data-chart="barChart"><i class="fa-solid fa-download"></i> PNG</button></div>
-        <canvas id="barChart" height="260"></canvas>
+        <div class="chart-canvas-wrap"><canvas id="barChart"></canvas></div>
       </div>
     </div>
   </section>
@@ -348,16 +348,18 @@
 <div id="tooltipEl" class="tooltip-el" role="tooltip"></div>
 
 <!-- ================= LIBRARIES ================= -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+  // Fallback loader: if the primary CDN failed (network block, ad-blocker, cache miss),
+  // pull Chart.js from jsDelivr before script.js runs so `Chart` is guaranteed to exist.
+  if (typeof Chart === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"><\/script>');
+  }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
-<script.1/dist/chart.umd.min.js"></script>
-
-.full.min.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-
-://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
-
-"></script>
-
+<script src="script.js"></script>
 </body>
 </html>
